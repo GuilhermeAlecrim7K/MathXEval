@@ -28,7 +28,8 @@ implementation
 
 uses
   Math,
-  Operations;
+  Operations,
+  Exceptions;
 
 constructor TSyntaxTree.Create;
 begin
@@ -46,12 +47,12 @@ end;
 procedure TSyntaxTree.PushToken(AToken: TToken);
 begin
   if (FLastTokenTree = nil) and not TTokenUtils.IsNumberToken(AToken.TokenType) then
-    raise Exception.Create('First element must be a number');
+    raise EInvalidFirstToken.Create('First element must be a number');
   if
     (FLastTokenTree <> nil)
     and not TokenSequenceAllowed(FLastTokenTree.Value.TokenType, AToken.TokenType)
   then
-      raise Exception.CreateFmt(
+      raise EInvalidTokenSequence.CreateFmt(
         'Sequence of "%s"("%s" "%s") not accepted at position %d',
         [
           TOKEN_TYPE_NAMES[AToken.TokenType],
@@ -112,7 +113,7 @@ begin
   if FLastTokenTree = nil then
     exit(0);
   if not (FLastTokenTree.Value.TokenType in [INT, ETokenType.FLOAT]) then
-    raise Exception.CreateFmt('Expression terminated with "%s" not accepted', [FLastTokenTree.Value.TokenString]);
+    raise EInvalidLastToken.CreateFmt('Expression terminated with "%s" not accepted', [FLastTokenTree.Value.TokenString]);
 
   Result := EvaluateTokenTree(FTokenTreeRoot);
 end;
@@ -125,7 +126,7 @@ var
   procedure CheckForConversionError;
   begin
     if ErrorInteger <> 0 then
-      raise Exception.CreateFmt(
+      raise EConvertError.CreateFmt(
         'Error converting "%s" to "%s" at position %d',
         [
           ATokenTree.Value.TokenString,
@@ -141,7 +142,7 @@ begin
     MULTIPLICATION, DIVISION, ADDITION, SUBTRACTION:
     begin
       if not Assigned(ATokenTree.Left) or not Assigned(ATokenTree.Right) then
-        raise Exception.CreateFmt(
+        raise EMissingOperand.CreateFmt(
           'Binary expression missing left and/or right operand at position %d',
           [ATokenTree.Value.TokenPosition]
         );
@@ -165,7 +166,7 @@ begin
       Result := FloatResult;
     end;
   else
-    raise Exception.CreateFmt(
+    raise ENotImplemented.CreateFmt(
       'Token "%s" of type %d not implemented',
       [ATokenTree.Value.TokenString, Ord(ATokenTree.Value.TokenType)]
     );

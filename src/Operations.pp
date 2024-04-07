@@ -32,7 +32,7 @@ end;
 function Divide(A, B: real): real;
 begin
   if B = 0 then
-    raise Exception.Create('It''s not possible to divide by zero');
+    raise EZeroDivide.Create('It''s not possible to divide by zero');
   Result := A / B;
 end;
 

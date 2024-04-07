@@ -1,4 +1,9 @@
 # Object files
-src/obj/
+**/obj/
+*.o
+*.ppu
 # binaries
 bin/
+*.compiled
+# Lazarus files
+**/backup/

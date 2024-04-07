@@ -19,6 +19,7 @@ type
     INT,
     FLOAT
   );
+
 const
   TOKEN_TYPE_NAMES: array [ETokenType] of string = (
     'Multiplication',

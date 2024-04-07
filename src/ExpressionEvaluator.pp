@@ -1,6 +1,6 @@
 unit ExpressionEvaluator;
 
-{$mode delphi}
+{$mode delphi}{$H+}
 
 interface
 
@@ -10,40 +10,54 @@ uses
   Token;
 
 type
-  TExpressionParser = class
+  TExpressionEvaluator = class
   private
     FSyntaxTree: TSyntaxTree;
     procedure PopulateTree(const AExpression: string);
   public
-    constructor Create;
-    destructor Destroy; override;
-    function EvaluateExpression(const AExpression: string): Variant;
+    function Evaluate(const AExpression: string): Variant;
   end;
 
 implementation
 
-constructor TExpressionParser.Create;
+uses
+  Exceptions;
+
+function TExpressionEvaluator.Evaluate(const AExpression: string): Variant;
 begin
   FSyntaxTree := TSyntaxTree.Create;
+  try
+    PopulateTree(AExpression);
+    Result := FSyntaxTree.Evaluate;
+  finally
+    FreeAndNil(FSyntaxTree);
+  end;
 end;
 
-destructor TExpressionParser.Destroy;
-begin
-  FreeAndNil(FSyntaxTree);
-  inherited;
-end;
-
-function TExpressionParser.EvaluateExpression(const AExpression: string): Variant;
-begin
-  PopulateTree(AExpression);
-  Result := FSyntaxTree.Evaluate;
-end;
-
-procedure TExpressionParser.PopulateTree(const AExpression: string);
+procedure TExpressionEvaluator.PopulateTree(const AExpression: string);
 var
   I: integer;
   numberStr: string;
   isFloat: boolean;
+  procedure ParseNumber;
+  begin
+    while (I <= Length(AExpression)) and ((AExpression[I] in ['0'..'9']) or (AExpression[I] = '.')) do
+    begin
+      if
+        ((numberStr = '') and (AExpression[I] = '.'))
+        or (isFloat and (AExpression[I] = '.'))
+      then
+        raise EInvalidToken.Create('Invalid floating point number');
+      isFloat := isFloat or (AExpression[I] = '.');
+      numberStr := numberStr + AExpression[I];
+      Inc(I);
+    end;
+    if isFloat then
+      FSyntaxTree.PushToken(TToken.Create(I, numberStr, FLOAT))
+    else
+      FSyntaxTree.PushToken(TToken.Create(I, numberStr, INT));
+    Dec(I);
+  end;
 begin
   I := 1;
   while I <= Length(AExpression) do
@@ -56,27 +70,9 @@ begin
       '/': FSyntaxTree.PushToken(TToken.Create(I, '/', DIVISION));
       '-': FSyntaxTree.PushToken(TToken.Create(I, '-', SUBTRACTION));
       '+': FSyntaxTree.PushToken(TToken.Create(I, '+', ADDITION));
-      '.', '0'..'9':
-      begin
-        while (I <= Length(AExpression)) and ((AExpression[I] in ['0'..'9']) or (AExpression[I] = '.')) do
-        begin
-          if
-            ((numberStr = '') and (AExpression[I] = '.'))
-            or (isFloat and (AExpression[I] = '.'))
-          then
-            raise Exception.Create('Invalid floating point number');
-          isFloat := isFloat or (AExpression[I] = '.');
-          numberStr := numberStr + AExpression[I];
-          Inc(I);
-       end;
-        if isFloat then
-          FSyntaxTree.PushToken(TToken.Create(I, numberStr, FLOAT))
-        else
-          FSyntaxTree.PushToken(TToken.Create(I, numberStr, INT));
-        continue;
-      end;
+      '.', '0'..'9': ParseNumber;
     else
-      raise Exception.CreateFmt('Token "%s" invalid at position %d', [AExpression[I], I]);
+      raise EInvalidToken.CreateFmt('Token "%s" invalid at position %d', [AExpression[I], I]);
     end;
     Inc(I);
   end;
