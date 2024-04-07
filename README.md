@@ -56,7 +56,6 @@ If it is an operation token, then the recursive algorithm is called on the Left 
 
 ### TODO
 
-- Unit Tests
 - Parenthesis tokens
 - Unary minus
 - Exponentiation
