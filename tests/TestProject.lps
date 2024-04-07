@@ -8,26 +8,28 @@
         <Filename Value="TestProject.lpr"/>
         <IsPartOfProject Value="True"/>
         <CursorPos X="28" Y="6"/>
-        <UsageCount Value="27"/>
+        <UsageCount Value="29"/>
         <Loaded Value="True"/>
       </Unit>
       <Unit>
         <Filename Value="ExpressionEvaluatorTest.pp"/>
         <IsPartOfProject Value="True"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="1"/>
         <TopLine Value="42"/>
-        <CursorPos X="94" Y="56"/>
-        <UsageCount Value="25"/>
+        <CursorPos X="86" Y="55"/>
+        <UsageCount Value="27"/>
         <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
         <Filename Value="../src/ExpressionEvaluator.pp"/>
         <IsPartOfProject Value="True"/>
-        <EditorIndex Value="-1"/>
-        <CursorPos X="3" Y="9"/>
-        <UsageCount Value="25"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="2"/>
+        <TopLine Value="36"/>
+        <CursorPos X="63" Y="58"/>
+        <UsageCount Value="27"/>
+        <Loaded Value="True"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
@@ -36,7 +38,7 @@
         <EditorIndex Value="-1"/>
         <TopLine Value="18"/>
         <CursorPos X="3" Y="32"/>
-        <UsageCount Value="25"/>
+        <UsageCount Value="27"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
@@ -44,7 +46,7 @@
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="3" Y="11"/>
-        <UsageCount Value="25"/>
+        <UsageCount Value="27"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
@@ -52,7 +54,7 @@
         <IsPartOfProject Value="True"/>
         <EditorIndex Value="-1"/>
         <CursorPos X="50" Y="13"/>
-        <UsageCount Value="25"/>
+        <UsageCount Value="27"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
@@ -62,7 +64,7 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="25"/>
+        <UsageCount Value="27"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
@@ -72,7 +74,7 @@
         <WindowIndex Value="-1"/>
         <TopLine Value="-1"/>
         <CursorPos X="-1" Y="-1"/>
-        <UsageCount Value="25"/>
+        <UsageCount Value="27"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
@@ -80,26 +82,26 @@
         <UnitName Value="ExpressionParserTest"/>
         <EditorIndex Value="-1"/>
         <WindowIndex Value="-1"/>
-        <UsageCount Value="22"/>
+        <UsageCount Value="21"/>
         <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit>
       <Unit>
         <Filename Value="/usr/share/fpcsrc/3.2.2/packages/fcl-fpcunit/src/testutils.pp"/>
         <EditorIndex Value="-1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit>
       <Unit>
         <Filename Value="/usr/share/fpcsrc/3.2.2/packages/fcl-fpcunit/src/DUnitCompatibleInterface.inc"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="3"/>
         <CursorPos X="21" Y="28"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="11"/>
         <Loaded Value="True"/>
       </Unit>
     </Units>
     <OtherDefines Count="1">
       <Define0 Value="CONSOLE_RUNNER"/>
     </OtherDefines>
-    <JumpHistory HistoryIndex="16">
+    <JumpHistory HistoryIndex="17">
       <Position>
         <Filename Value="TestProject.lpr"/>
         <Caret Line="10" Column="39"/>
@@ -167,6 +169,10 @@
       <Position>
         <Filename Value="ExpressionEvaluatorTest.pp"/>
         <Caret Line="139" Column="11" TopLine="74"/>
+      </Position>
+      <Position>
+        <Filename Value="ExpressionEvaluatorTest.pp"/>
+        <Caret Line="55" Column="86" TopLine="42"/>
       </Position>
     </JumpHistory>
     <RunParams>
