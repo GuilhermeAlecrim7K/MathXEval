@@ -1,5 +1,7 @@
-program Calculate;
-{$mode delphi}
+program MathXEval;
+
+{$mode delphi}{+H}
+
 uses
   SysUtils,
   ExpressionEvaluator in 'ExpressionEvaluator.pp';
@@ -7,15 +9,15 @@ uses
 var
   input: string;
   result: Variant;
-  ExpressionParser: TExpressionParser;
+  ExpressionEvaluator: TExpressionEvaluator;
 begin
   try
     Readln(input);
-    ExpressionParser := TExpressionParser.Create;
+    ExpressionEvaluator := TExpressionEvaluator.Create;
     try
-      result := ExpressionParser.EvaluateExpression(input);
+      result := ExpressionEvaluator.Evaluate(input);
     finally
-      ExpressionParser.Free;
+      ExpressionEvaluator.Free;
     end;
     Writeln(result);
   except

@@ -4,7 +4,7 @@
 script_dir="$(dirname "$(readlink -f "$0")")"
 
 # Project file
-input_file_name="Calculate.pp"
+input_file_name="MathXEval.lpr"
 input_file="$script_dir/src/$input_file_name"
 
 # Output file (without extension)
