@@ -1,5 +1,7 @@
 unit Exceptions;
 
+{$mode delphi}
+
 interface
 
 uses

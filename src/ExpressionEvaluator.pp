@@ -12,8 +12,7 @@ uses
 type
   TExpressionEvaluator = class
   private
-    FSyntaxTree: TSyntaxTree;
-    procedure PopulateTree(const AExpression: string);
+    procedure PopulateTree(ASyntaxTree: TSyntaxTree; const AExpression: string);
   public
     function Evaluate(const AExpression: string): Variant;
   end;
@@ -24,21 +23,25 @@ uses
   Exceptions;
 
 function TExpressionEvaluator.Evaluate(const AExpression: string): Variant;
+var
+  SyntaxTree: TSyntaxTree;
 begin
-  FSyntaxTree := TSyntaxTree.Create;
+  SyntaxTree := TSyntaxTree.Create;
   try
-    PopulateTree(AExpression);
-    Result := FSyntaxTree.Evaluate;
+    PopulateTree(SyntaxTree, AExpression);
+    Result := SyntaxTree.Evaluate;
   finally
-    FreeAndNil(FSyntaxTree);
+    FreeAndNil(SyntaxTree);
   end;
 end;
 
-procedure TExpressionEvaluator.PopulateTree(const AExpression: string);
+procedure TExpressionEvaluator.PopulateTree(ASyntaxTree: TSyntaxTree;
+  const AExpression: string);
 var
   I: integer;
   numberStr: string;
   isFloat: boolean;
+  CurToken: TToken;
   procedure ParseNumber;
   begin
     while (I <= Length(AExpression)) and ((AExpression[I] in ['0'..'9']) or (AExpression[I] = '.')) do
@@ -53,9 +56,9 @@ var
       Inc(I);
     end;
     if isFloat then
-      FSyntaxTree.PushToken(TToken.Create(I, numberStr, FLOAT))
+      CurToken := TToken.Create(I, numberStr, FLOAT)
     else
-      FSyntaxTree.PushToken(TToken.Create(I, numberStr, INT));
+      CurToken := TToken.Create(I, numberStr, INT);
     Dec(I);
   end;
 begin
@@ -64,15 +67,23 @@ begin
   begin
     numberStr := '';
     isFloat := false;
+    CurToken := nil;
     case AExpression[I] of
       ' ': ;
-      '*': FSyntaxTree.PushToken(TToken.Create(I, '*', MULTIPLICATION));
-      '/': FSyntaxTree.PushToken(TToken.Create(I, '/', DIVISION));
-      '-': FSyntaxTree.PushToken(TToken.Create(I, '-', SUBTRACTION));
-      '+': FSyntaxTree.PushToken(TToken.Create(I, '+', ADDITION));
+      '*': CurToken := TToken.Create(I, '*', MULTIPLICATION);
+      '/': CurToken := TToken.Create(I, '/', DIVISION);
+      '-': CurToken := TToken.Create(I, '-', SUBTRACTION);
+      '+': CurToken := TToken.Create(I, '+', ADDITION);
       '.', '0'..'9': ParseNumber;
     else
       raise EInvalidToken.CreateFmt('Token "%s" invalid at position %d', [AExpression[I], I]);
+    end;
+    try
+      if CurToken <> nil then
+        ASyntaxTree.PushToken(CurToken);
+    except
+      FreeAndNil(CurToken);
+      raise;
     end;
     Inc(I);
   end;
