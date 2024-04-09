@@ -78,13 +78,19 @@ end;
 
 procedure TMathXEval.RunProgram;
 var
+  I: Integer;
   input: string;
   result: Variant;
   ExpressionEvaluator: TExpressionEvaluator;
 begin
-  try
+  if ParamCount < 1 then
+  begin
     Write('Type the expression that should be evaluated: ');
     Readln(input);
+  end
+  else for I := 1 to ParamCount do
+    input := input + ' ' + Params[I];
+  try
     ExpressionEvaluator := TExpressionEvaluator.Create;
     try
       result := ExpressionEvaluator.Evaluate(input);
