@@ -12,6 +12,14 @@ jobs:
           sudo apt-get install -y fpc
       - uses: actions/checkout@v4
       - name: Compile project
-        run: fpc @src/debug.cfg ${{ github.workspace }}/src/MathXEval.lpr
+        run: |
+          cd ${{ github.workspace }}/src/
+          fpc @debug.cfg ${{ github.workspace }}/src/MathXEval.lpr
       - name: Compile test project
-        run: fpc @tests/debug.cfg ${{ github.workspace }}/tests/TestProject.lpr
+        run: |
+          cd ${{ github.workspace }}/tests/
+          fpc @debug.cfg ${{ github.workspace }}/tests/TestProject.lpr
+      - name: Run tests
+        run: |
+          cd ${{ github.workspace }}/tests/
+          ./bin/MathXEval
