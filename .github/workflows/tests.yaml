@@ -11,15 +11,16 @@ jobs:
           sudo apt-get update
           sudo apt-get install -y fpc
       - uses: actions/checkout@v4
+      - name: Create directories
+        run: |
+          pwd
+          mkdir ${{ github.workspace }}/bin
+          echo "${{ github.workspace }}/src/$(fpc -iTP)-$(fpc -iTO)" | xargs mkdir
+          mkdir tests/bin/
+          echo "${{ github.workspace }}/tests/$(fpc -iTP)-$(fpc -iTO)" | xargs mkdir
       - name: Compile project
-        run: |
-          cd ${{ github.workspace }}/src/
-          fpc @debug.cfg ${{ github.workspace }}/src/MathXEval.lpr
+        run: fpc @src/debug.cfg ${{ github.workspace }}/src/MathXEval.lpr
       - name: Compile test project
-        run: |
-          cd ${{ github.workspace }}/tests/
-          fpc @debug.cfg ${{ github.workspace }}/tests/TestProject.lpr
+        run: fpc @tests/debug.cfg ${{ github.workspace }}/tests/TestProject.lpr
       - name: Run tests
-        run: |
-          cd ${{ github.workspace }}/tests/
-          ./bin/MathXEval
+        run: ${{ github.workspace }}/tests/bin/MathXEval
