@@ -19,8 +19,12 @@ jobs:
           mkdir tests/bin/
           echo "${{ github.workspace }}/tests/$(fpc -iTP)-$(fpc -iTO)" | xargs mkdir
       - name: Compile project
-        run: fpc @src/debug.cfg ${{ github.workspace }}/src/MathXEval.lpr
+        run: |
+          cd ${{ github.workspace }}/src
+          fpc @debug.cfg MathXEval.lpr
       - name: Compile test project
-        run: fpc @tests/debug.cfg ${{ github.workspace }}/tests/TestProject.lpr
+        run: |
+          cd ${{ github.workspace }}/tests
+          fpc @debug.cfg TestProject.lpr
       - name: Run tests
-        run: ${{ github.workspace }}/tests/bin/MathXEval
+        run: bin/TestProject
