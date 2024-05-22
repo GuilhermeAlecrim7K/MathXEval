@@ -1,0 +1,17 @@
+name: Unit Testing
+run-name: Unit Testing triggered by ${{ github.actor }}
+on: [push]
+jobs:
+  setup-environment:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Install FPC
+        run: |
+          export DEBIAN_FRONTEND=noninteractive
+          sudo apt-get update
+          sudo apt-get install -y fpc
+      - uses: actions/checkout@v4
+      - name: Compile project
+        run: fpc @src/debug.cfg ${{ github.workspace }}/src/MathXEval.lpr
+      - name: Compile test project
+        run: fpc @tests/debug.cfg ${{ github.workspace }}/tests/TestProject.lpr
