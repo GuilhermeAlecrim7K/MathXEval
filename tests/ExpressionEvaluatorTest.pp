@@ -33,6 +33,7 @@ type
     procedure TestSubtraction;
     procedure TestMultiplication;
     procedure TestDivision;
+    procedure TestExponentiation;
     procedure TestMultipleOperationsWithSamePrecedence;
     procedure TestPrecedenceOfOperations;
   end;
@@ -59,6 +60,7 @@ begin
   TryCatchEvaluationException('-1', EInvalidFirstToken);
   TryCatchEvaluationException('*1', EInvalidFirstToken);
   TryCatchEvaluationException('/1', EInvalidFirstToken);
+  TryCatchEvaluationException('^1', EInvalidFirstToken);
 end;
 
 procedure TExpressionEvaluatorTest.TryCatchEvaluationException(
@@ -84,6 +86,7 @@ begin
   TryCatchEvaluationException('1-', EInvalidLastToken);
   TryCatchEvaluationException('1*', EInvalidLastToken);
   TryCatchEvaluationException('1/', EInvalidLastToken);
+  TryCatchEvaluationException('1^', EInvalidLastToken);
 end;
 
 procedure TExpressionEvaluatorTest.TestExpressionsHavingTwoOperatorsInSequence;
@@ -92,18 +95,27 @@ begin
   TryCatchEvaluationException('1+-1', EInvalidTokenSequence);
   TryCatchEvaluationException('1+*1', EInvalidTokenSequence);
   TryCatchEvaluationException('1+/1', EInvalidTokenSequence);
+  TryCatchEvaluationException('1+^1', EInvalidTokenSequence);
   TryCatchEvaluationException('1-+1', EInvalidTokenSequence);
   TryCatchEvaluationException('1--1', EInvalidTokenSequence);
   TryCatchEvaluationException('1-*1', EInvalidTokenSequence);
   TryCatchEvaluationException('1-/1', EInvalidTokenSequence);
+  TryCatchEvaluationException('1-^1', EInvalidTokenSequence);
   TryCatchEvaluationException('1*+1', EInvalidTokenSequence);
   TryCatchEvaluationException('1*-1', EInvalidTokenSequence);
   TryCatchEvaluationException('1**1', EInvalidTokenSequence);
   TryCatchEvaluationException('1*/1', EInvalidTokenSequence);
+  TryCatchEvaluationException('1*^1', EInvalidTokenSequence);
   TryCatchEvaluationException('1/+1', EInvalidTokenSequence);
   TryCatchEvaluationException('1/-1', EInvalidTokenSequence);
   TryCatchEvaluationException('1/*1', EInvalidTokenSequence);
   TryCatchEvaluationException('1//1', EInvalidTokenSequence);
+  TryCatchEvaluationException('1^/1', EInvalidTokenSequence);
+  TryCatchEvaluationException('1^+1', EInvalidTokenSequence);
+  TryCatchEvaluationException('1^-1', EInvalidTokenSequence);
+  TryCatchEvaluationException('1^*1', EInvalidTokenSequence);
+  TryCatchEvaluationException('1^/1', EInvalidTokenSequence);
+  TryCatchEvaluationException('1^^1', EInvalidTokenSequence);
 end;
 
 procedure TExpressionEvaluatorTest.TestExpressionsHavingTwoNumbersInSequence;
@@ -147,6 +159,27 @@ begin
   TryCatchEvaluationException('1 / 0', EZeroDivide);
 end;
 
+procedure TExpressionEvaluatorTest.TestExponentiation;
+begin
+  CheckEquals(8, FExpressionEvaluator.Evaluate('2^3'));
+  CheckEquals(0, FExpressionEvaluator.Evaluate('0^5'));
+  CheckEquals(1, FExpressionEvaluator.Evaluate('0^0'));
+  {
+    - Make available when unary minus is implemented
+  CheckEquals(1, FExpressionEvaluator.Evaluate('-3^1'));
+  CheckEquals(-8, FExpressionEvaluator.Evaluate('-2^3'));
+  CheckEquals(0.125, FExpressionEvaluator.Evaluate('2^-3'), 0.001);
+  CheckEquals(0.25, FExpressionEvaluator.Evaluate('0.5^-2'), 0.01);
+  CheckEquals(0.111, FExpressionEvaluator.Evaluate('-3^-2'), 0.01);
+  TryCatchEvaluationException('-2 ^0.5', math.NaN);
+  TryCatchEvaluationException('1+-2 ^0.5', ENaNOperation);
+  }
+  CheckEquals(2, FExpressionEvaluator.Evaluate('4^0.5'), 0.01);
+  // Testing edge cases
+  FExpressionEvaluator.Evaluate('2^1000');
+  {FExpressionEvaluator.Evaluate('2^-1000');}
+end;
+
 procedure TExpressionEvaluatorTest.TestMultipleOperationsWithSamePrecedence;
 begin
   CheckEquals(20, FExpressionEvaluator.Evaluate('18 - 12 - 2 + 15 + 1'));
@@ -175,6 +208,7 @@ begin
   CheckEquals(20, FExpressionEvaluator.Evaluate('20 * 5 / 10 * 2'));
   CheckEquals(5, FExpressionEvaluator.Evaluate('25 / 5 * 3 / 3'));
   CheckEquals(25, FExpressionEvaluator.Evaluate('100 / 10 / 2 * 5'));
+  CheckEquals(256, FExpressionEvaluator.Evaluate('2^2^3'));
 end;
 
 procedure TExpressionEvaluatorTest.TestPrecedenceOfOperations;
@@ -193,6 +227,8 @@ begin
   CheckEquals(-33, FExpressionEvaluator.Evaluate('9 * 3 + 20 - 18 * 4 - 8'));
   CheckEquals(-255, FExpressionEvaluator.Evaluate('37 - 17 * 240 / 20 - 22 * 4'));
   CheckEquals(47.5, FExpressionEvaluator.Evaluate('11 * 4 - 6 + 3 + 13 / 2'), 0.1);
+  CheckEquals(8, FExpressionEvaluator.Evaluate('64/2^3'));
+  CheckEquals(53, FExpressionEvaluator.Evaluate('50+3^1'));
 end;
 
 initialization
