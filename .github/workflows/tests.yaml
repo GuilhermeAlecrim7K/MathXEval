@@ -9,7 +9,7 @@ on:
       - '**.pp'
       - '**.lpr'
       - '**.cfg'
-  pull-request:
+  pull_request:
     types: [opened, reopened]
 jobs:
   setup-environment:
