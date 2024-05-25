@@ -74,6 +74,7 @@ begin
       '/': CurToken := TToken.Create(I, '/', DIVISION);
       '-': CurToken := TToken.Create(I, '-', SUBTRACTION);
       '+': CurToken := TToken.Create(I, '+', ADDITION);
+      '^': CurToken := TToken.Create(I, '^', EXPONENTIATION);
       '.', '0'..'9': ParseNumber;
     else
       raise EInvalidToken.CreateFmt('Token "%s" invalid at position %d', [AExpression[I], I]);

@@ -27,7 +27,7 @@ type
 implementation
 
 uses
-  Math,
+  math,
   Operations,
   Exceptions;
 
@@ -139,7 +139,7 @@ begin
   if ATokenTree = nil then
     Exit(0);
   case ATokenTree.Value.TokenType of
-    MULTIPLICATION, DIVISION, ADDITION, SUBTRACTION:
+    EXPONENTIATION, MULTIPLICATION, DIVISION, ADDITION, SUBTRACTION:
     begin
       if not Assigned(ATokenTree.Left) or not Assigned(ATokenTree.Right) then
         raise EMissingOperand.CreateFmt(
@@ -147,10 +147,36 @@ begin
           [ATokenTree.Value.TokenPosition]
         );
       case ATokenTree.Value.TokenType of
-        MULTIPLICATION: Result := Multiply(EvaluateTokenTree(ATokenTree.Left), EvaluateTokenTree(ATokenTree.Right));
-        DIVISION: Result := Divide(EvaluateTokenTree(ATokenTree.Left), EvaluateTokenTree(ATokenTree.Right));
-        ADDITION: Result := Add(EvaluateTokenTree(ATokenTree.Left), EvaluateTokenTree(ATokenTree.Right));
-        SUBTRACTION: Result := Subtract(EvaluateTokenTree(ATokenTree.Left), EvaluateTokenTree(ATokenTree.Right));
+        EXPONENTIATION:
+          Result :=
+            math.Power(
+              EvaluateTokenTree(ATokenTree.Left),
+              EvaluateTokenTree(ATokenTree.Right)
+            );
+        MULTIPLICATION:
+          Result :=
+            Multiply(
+              EvaluateTokenTree(ATokenTree.Left),
+              EvaluateTokenTree(ATokenTree.Right)
+            );
+        DIVISION:
+          Result :=
+            Divide(
+              EvaluateTokenTree(ATokenTree.Left),
+              EvaluateTokenTree(ATokenTree.Right)
+            );
+        ADDITION:
+          Result :=
+            Add(
+              EvaluateTokenTree(ATokenTree.Left),
+              EvaluateTokenTree(ATokenTree.Right)
+            );
+        SUBTRACTION:
+          Result :=
+            Subtract(
+              EvaluateTokenTree(ATokenTree.Left),
+              EvaluateTokenTree(ATokenTree.Right)
+            );
       end;
     end;
     INT:
