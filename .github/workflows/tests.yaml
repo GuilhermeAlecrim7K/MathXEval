@@ -26,4 +26,4 @@ jobs:
           cd tests
           fpc @debug.cfg TestProject.lpr
       - name: Run tests
-        run: src/bin/TestProject
+        run: tests/bin/TestProject
