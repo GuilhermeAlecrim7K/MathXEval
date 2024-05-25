@@ -229,6 +229,10 @@ begin
   CheckEquals(47.5, FExpressionEvaluator.Evaluate('11 * 4 - 6 + 3 + 13 / 2'), 0.1);
   CheckEquals(8, FExpressionEvaluator.Evaluate('64/2^3'));
   CheckEquals(53, FExpressionEvaluator.Evaluate('50+3^1'));
+  CheckEquals(160, FExpressionEvaluator.Evaluate('7 + 6 * 5^ 2 + 3'));
+  CheckEquals(40, FExpressionEvaluator.Evaluate('10^2 - 3^2 * 6 - 3 * 2 '));
+  CheckEquals(149, FExpressionEvaluator.Evaluate('12 + 6^3 - 9^2 + 2'));
+  CheckEquals(89, FExpressionEvaluator.Evaluate('11^2 - 3^2 + 12 - 33 - 2'));
 end;
 
 initialization
