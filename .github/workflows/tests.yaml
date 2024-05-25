@@ -19,11 +19,11 @@ jobs:
           mkdir ./tests/obj/
       - name: Compile project
         run: |
-          cd ./src
+          cd src
           fpc @debug.cfg MathXEval.lpr
       - name: Compile test project
         run: |
-          cd ${{ github.workspace }}/tests
+          cd tests
           fpc @debug.cfg TestProject.lpr
       - name: Run tests
-        run: bin/TestProject
+        run: src/bin/TestProject
