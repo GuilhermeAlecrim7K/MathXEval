@@ -13,14 +13,13 @@ jobs:
       - uses: actions/checkout@v4
       - name: Create directories
         run: |
-          pwd
-          mkdir ${{ github.workspace }}/bin
-          echo "${{ github.workspace }}/src/$(fpc -iTP)-$(fpc -iTO)" | xargs mkdir
-          mkdir tests/bin/
-          echo "${{ github.workspace }}/tests/$(fpc -iTP)-$(fpc -iTO)" | xargs mkdir
+          mkdir ./bin
+          mkdir ./src/obj/
+          mkdir ./tests/bin/
+          mkdir ./tests/obj/
       - name: Compile project
         run: |
-          cd ${{ github.workspace }}/src
+          cd ./src
           fpc @debug.cfg MathXEval.lpr
       - name: Compile test project
         run: |
