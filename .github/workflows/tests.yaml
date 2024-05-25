@@ -1,6 +1,16 @@
 name: Unit Testing
 run-name: Unit Testing triggered by ${{ github.actor }}
-on: [push]
+on:
+  push:
+    branches:
+      - 'main'
+      - 'releases/**'
+    paths:
+      - '**.pp'
+      - '**.lpr'
+      - '**.cfg'
+  pull-request:
+    types: [opened, reopened]
 jobs:
   setup-environment:
     runs-on: ubuntu-latest
