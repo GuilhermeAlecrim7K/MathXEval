@@ -15,7 +15,7 @@ type
     FTokenTreeRoot: TTokenTree;
     FLastTokenTree: TTokenTree;
     function TokenSequenceAllowed(A, B: ETokenType): boolean;
-    function AddTokenToTree(AToken: TToken): TTokenTree;
+    function AddTokenToTree(AToken: TToken; var ATokenTreeRoot: TTokenTree): TTokenTree;
     function EvaluateTokenTree(ATokenTree: TTokenTree): Variant;
   public
     constructor Create;
@@ -34,11 +34,13 @@ uses
 constructor TSyntaxTree.Create;
 begin
   inherited Create;
+  FTokenTreeRoot := nil;
   FLastTokenTree := nil;
 end;
 
 destructor TSyntaxTree.Destroy;
 begin
+  FLastTokenTree := nil;
   if Assigned(FTokenTreeRoot) then
     FTokenTreeRoot.Free;
   inherited;
@@ -61,7 +63,7 @@ begin
           FLastTokenTree.Value.TokenPosition
         ]
       );
-  FLastTokenTree := AddTokenToTree(AToken);
+  FLastTokenTree := AddTokenToTree(AToken, FTokenTreeRoot);
 end;
 
 function TSyntaxTree.TokenSequenceAllowed(A, B: ETokenType): boolean;
@@ -71,39 +73,38 @@ begin
     or (TTokenUtils.IsNumberToken(A) and TTokenUtils.IsOperationToken(B));
 end;
 
-function TSyntaxTree.AddTokenToTree(AToken: TToken): TTokenTree;
+function TSyntaxTree.AddTokenToTree(AToken: TToken; var ATokenTreeRoot: TTokenTree): TTokenTree;
 begin
-  Result := TTokenTree.Create(AToken);
-  if FTokenTreeRoot = nil then
+  if ATokenTreeRoot = nil then
   begin
-    FTokenTreeRoot := Result;
+    ATokenTreeRoot := TTokenTree.Create(AToken);
+    exit(ATokenTreeRoot);
+  end;
+  if TTokenUtils.IsNumberToken(ATokenTreeRoot.Value.TokenType) then
+  begin
+    Result := TTokenTree.Create(AToken);
+    Result.Left := ATokenTreeRoot;
+    ATokenTreeRoot := Result;
     exit;
   end;
   if TTokenUtils.IsNumberToken(AToken.TokenType) then
   begin
-    FLastTokenTree.Right := Result;
-    exit;
-  end;
-  if TTokenUtils.IsNumberToken(FTokenTreeRoot.Value.TokenType) then
-  begin
-    Result.Left := FTokenTreeRoot;
-    FTokenTreeRoot := Result;
-    exit;
+    FLastTokenTree.Right := TTokenTree.Create(AToken);
+    exit(FLastTokenTree.Right);
   end;
   if
     TTokenUtils.CompareTokenPrecedence(
-      AToken.TokenType,
-      FTokenTreeRoot.Value.TokenType
-    ) = GreaterThanValue then
+      ATokenTreeRoot.Value.TokenType,
+      AToken.TokenType
+    ) = LessThanValue then
   begin
-    Result.Left := FTokenTreeRoot.Right;
-    FTokenTreeRoot.Right := Result;
-    exit;
+    exit(AddTokenToTree(AToken, ATokenTreeRoot.Right));
   end
   else
   begin
-    Result.Left := FTokenTreeRoot;
-    FTokenTreeRoot := Result;
+    Result := TTokenTree.Create(AToken);
+    Result.Left := ATokenTreeRoot;
+    ATokenTreeRoot := Result;
     exit;
   end;
 end;

@@ -7,15 +7,14 @@ interface
 type
   TObjectBinaryTree<T: class> = class
   private
-    FLeft: TObjectBinaryTree<T>;
-    FRight: TObjectBinaryTree<T>;
     FOwnsObjects: boolean;
     FValue: T;
   public
+    Left: TObjectBinaryTree<T>;
+    Right: TObjectBinaryTree<T>;
+  public
     constructor Create(AValue: T; AOwnsObjects: boolean = true);
     destructor Destroy; override;
-    property Left: TObjectBinaryTree<T> read FLeft write FLeft;
-    property Right: TObjectBinaryTree<T> read FRight write FRight;
     property Value: T read FValue;
   end;
 
@@ -28,8 +27,8 @@ begin
   inherited Create;
   FValue := AValue;
   FOwnsObjects := AOwnsObjects;
-  FLeft := nil;
-  FRight := nil;
+  Left := nil;
+  Right := nil;
 end;
 
 destructor TObjectBinaryTree<T>.Destroy;
@@ -38,10 +37,10 @@ begin
   begin
     if Assigned(FValue) then
       FValue.Free;
-    if Assigned(FLeft) then
-      FLeft.Free;
-    if Assigned(FRight) then
-      FRight.Free;
+    if Assigned(Left) then
+      Left.Free;
+    if Assigned(Right) then
+      Right.Free;
   end;
   inherited;
 end;
