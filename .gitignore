@@ -7,3 +7,4 @@ bin/
 *.compiled
 # Lazarus files
 **/backup/
+*.lps
