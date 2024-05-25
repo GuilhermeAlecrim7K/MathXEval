@@ -19,6 +19,7 @@ Some principles of lexing and parsing were applied in this solution. Firstly, th
 
 In the [Token.pp](src/Token.pp) unit, you will find an enum with all accepted tokens. They are:
 
+- Exponentiation (^)
 - Multiplication (*)
 - Division (/)
 - Addition (+)
@@ -50,7 +51,7 @@ Here's the logic behind the process of building the tree:
 From this point forward, a few assumptions are made to guarantee the order of precedence of the operations.
 
 - All new number tokens will be placed in the Right of the previously inserted operation token tree.
-- All new operations will replace a given token in the tree. If the new token has precedence over the root token then it replaces the Right of the root token and its left will now reference the token which was replaced. However, if the new token is either equal or lower in preference, then the root token is replaced by the new token and the left of the new token will now point to the previous root.
+- All new operations will replace a given token in the tree. If the new token has precedence over the root token then the right node of the tree is recursively parsed to guarantee order of precedence. At some point, it replaces the Right of the root token and its left will now reference the token which was replaced. However, if the new token is either equal or lower in preference, then the root token is replaced by the new token and the left of the new token will now point to the previous root.
 
 The tree is assembled this way to allow for parsing the tree from left to right in depth.
 

@@ -12,6 +12,7 @@ uses
 
 type
   ETokenType = (
+    EXPONENTIATION,
     MULTIPLICATION,
     DIVISION,
     ADDITION,
@@ -22,6 +23,7 @@ type
 
 const
   TOKEN_TYPE_NAMES: array [ETokenType] of string = (
+    'Exponentiation',
     'Multiplication',
     'Division',
     'Addition',
@@ -49,7 +51,7 @@ type
   public
     class function IsOperationToken(ATokenType: ETokenType): boolean;
     class function IsNumberToken(ATokenType: ETokenType): boolean;
-    class function CompareTokenPrecedence(A, B: ETokenType): TValueRelationship;
+    class function CompareTokenPrecedence(APrevious, ANew: ETokenType): TValueRelationship;
   end;
 
 implementation
@@ -68,7 +70,10 @@ end;
 
 class function TTokenUtils.IsOperationToken(ATokenType: ETokenType): boolean;
 begin
-  Result := ATokenType in [MULTIPLICATION, DIVISION, ADDITION, SUBTRACTION];
+  Result :=
+    ATokenType in [
+      EXPONENTIATION, MULTIPLICATION, DIVISION, ADDITION, SUBTRACTION
+    ];
 end;
 
 class function TTokenUtils.IsNumberToken(ATokenType: ETokenType): boolean;
@@ -76,27 +81,39 @@ begin
   Result := ATokenType in [INT, FLOAT];
 end;
 
-class function TTokenUtils.CompareTokenPrecedence(A, B: ETokenType): TValueRelationship;
+class function TTokenUtils.CompareTokenPrecedence(APrevious, ANew: ETokenType): TValueRelationship;
 begin
-  if IsNumberToken(A) or IsNumberToken(B) then
+  if IsNumberToken(APrevious) or IsNumberToken(ANew) then
     raise Exception.Create('Cannot compare precedence with a number token');
-  Result := GreaterThanValue;
-  case A of
+  case APrevious of
+    EXPONENTIATION:
+    begin
+      if ANew = EXPONENTIATION then
+        Result := LessThanValue
+      else
+        Result := GreaterThanValue;
+    end;
     MULTIPLICATION, DIVISION:
     begin
-      case B of
+      case ANew of
         MULTIPLICATION, DIVISION: Result := EqualsValue;
+        EXPONENTIATION: Result := LessThanValue;
+        ADDITION, SUBTRACTION: Result := GreaterThanValue;
+      else
+        raise ENotImplemented.CreateFmt('Token type %d not implemented', [Ord(ANew)]);
       end;
     end;
     ADDITION, SUBTRACTION:
     begin
-      case B of
+      case ANew of
         ADDITION, SUBTRACTION: Result := EqualsValue;
-        MULTIPLICATION, DIVISION: Result := LessThanValue;
+        MULTIPLICATION, DIVISION, EXPONENTIATION: Result := LessThanValue;
+      else
+        raise ENotImplemented.CreateFmt('Token type %d not implemented', [Ord(ANew)]);
       end;
     end;
   else
-    raise Exception.CreateFmt('Token type %d not implemented', [Ord(A)]);
+    raise ENotImplemented.CreateFmt('Token type %d not implemented', [Ord(APrevious)]);
   end;
 end;
 
