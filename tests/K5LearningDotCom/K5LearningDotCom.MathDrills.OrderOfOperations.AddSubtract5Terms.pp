@@ -10,15 +10,11 @@ uses
   testutils,
   testregistry,
   ExpressionEvaluator,
-  Exceptions;
+  Exceptions,
+  K5LearningDotCom.BaseTest;
 
 type
-  TAddSubtract5TermsTests = class(TTestCase)
-  private
-    FExpressionEvaluator: TExpressionEvaluator;
-  protected
-    procedure Setup; override;
-    procedure TearDown; override;
+  TAddSubtract5TermsTests = class(TK5LearningDotComBaseTest)
   published
     procedure Worksheet1Tests;
     procedure Worksheet2Tests;
@@ -29,18 +25,6 @@ type
   end;
 
 implementation
-
-procedure TAddSubtract5TermsTests.Setup;
-begin
-  inherited;
-  FExpressionEvaluator := TExpressionEvaluator.Create;
-end;
-
-procedure TAddSubtract5TermsTests.TearDown;
-begin
-  FreeAndNil(FExpressionEvaluator);
-  inherited;
-end;
 
 procedure TAddSubtract5TermsTests.Worksheet1Tests;
 begin
