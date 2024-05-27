@@ -36,6 +36,7 @@ type
     procedure TestExponentiation;
     procedure TestMultipleOperationsWithSamePrecedence;
     procedure TestPrecedenceOfOperations;
+    procedure TestValidityOfSequenceOfTokensInExpressionsWithParentheses;
   end;
 
 implementation
@@ -76,7 +77,10 @@ begin
     );
   except
     on E: Exception do
-      CheckTrue(E is AExceptionType);
+      CheckTrue(
+        E is AExceptionType,
+        Format('Expected %s but was %s', [AExceptionType.ClassName, E.ClassName])
+      );
   end;
 end;
 
@@ -235,7 +239,24 @@ begin
   CheckEquals(89, FExpressionEvaluator.Evaluate('11^2 - 3^2 + 12 - 33 - 2'));
 end;
 
+procedure TExpressionEvaluatorTest.TestValidityOfSequenceOfTokensInExpressionsWithParentheses;
+begin
+  CheckEquals(8, FExpressionEvaluator.Evaluate('2 * (3+1)'));
+  CheckEquals(9, FExpressionEvaluator.Evaluate('(4+5)'));
+  CheckEquals(4, FExpressionEvaluator.Evaluate('(4)'));
+  CheckEquals(2, FExpressionEvaluator.Evaluate('1 + (1)'));
+  CheckEquals(2, FExpressionEvaluator.Evaluate('(1 + (1))'));
+  CheckEquals(1, FExpressionEvaluator.Evaluate('((1) *1)'));
+  TryCatchEvaluationException('(+)', EInvalidFirstToken);
+  TryCatchEvaluationException('(4 +)', EInvalidTokenSequence);
+  TryCatchEvaluationException('1 + (1-1', EParenthesesMismatch);
+  TryCatchEvaluationException('1 + (1-1))', EParenthesesMismatch);
+  TryCatchEvaluationException('1 + 1) + 3 *(2', EParenthesesMismatch);
+  TryCatchEvaluationException('3 * (2', EParenthesesMismatch);
+  TryCatchEvaluationException('1 + () + 1', EInvalidTokenSequence);
+end;
+
 initialization
-  RegisterTest(TExpressionEvaluatorTest);
+  RegisterTest('Expression Evaluator', TExpressionEvaluatorTest);
 
 end.
