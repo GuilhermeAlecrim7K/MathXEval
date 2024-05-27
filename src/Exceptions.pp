@@ -13,6 +13,7 @@ type
   EInvalidTokenSequence = class(Exception);
   EMissingOperand = class(Exception);
   EInvalidToken = class(Exception);
+  EParenthesesMismatch = class(Exception);
 
 implementation
 

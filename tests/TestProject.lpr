@@ -15,9 +15,12 @@ uses
   Operations in '../src/Operations.pp',
   BinaryTree in '../src/BinaryTree.pp',
   Token in '../src/Token.pp',
+  TokenTree in '../src/TokenTree.pp',
   SyntaxTree in '../src/SyntaxTree.pp',
   ExpressionEvaluator in '../src/ExpressionEvaluator.pp',
-  ExpressionEvaluatorTest in 'ExpressionEvaluatorTest.pp';
+  ExpressionEvaluatorTest in 'ExpressionEvaluatorTest.pp',
+  K5LearningDotCom.MathDrills.OrderOfOperations.AddSubtract5Terms in
+    'K5LearningDotCom/K5LearningDotCom.MathDrills.OrderOfOperations.AddSubtract5Terms.pp';
 
 {$IFDEF CONSOLE_RUNNER}
 type
