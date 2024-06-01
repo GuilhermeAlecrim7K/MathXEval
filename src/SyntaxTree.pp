@@ -141,10 +141,10 @@ begin
   if
     (FCurrentPriorityLevel > ATokenTreeRoot.PriorityLevel)
     or (
-      TTokenUtils.CompareTokenPrecedence(
+      (TTokenUtils.CompareTokenPrecedence(
         ATokenTreeRoot.Value.TokenType,
         AToken.TokenType
-      ) = LessThanValue
+      ) = LessThanValue) and (FCurrentPriorityLevel = ATokenTreeRoot.PriorityLevel)
     )
   then
     exit(AddTokenToTree(AToken, ATokenTreeRoot.Right))
