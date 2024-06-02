@@ -15,9 +15,25 @@ uses
   Operations in '../src/Operations.pp',
   BinaryTree in '../src/BinaryTree.pp',
   Token in '../src/Token.pp',
+  TokenTree in '../src/TokenTree.pp',
   SyntaxTree in '../src/SyntaxTree.pp',
   ExpressionEvaluator in '../src/ExpressionEvaluator.pp',
-  ExpressionEvaluatorTest in 'ExpressionEvaluatorTest.pp';
+  ExpressionEvaluatorTest in 'ExpressionEvaluatorTest.pp',
+  K5LearningDotCom.BaseTest in 'K5LearningDotCom/K5LearningDotCom.BaseTest.pp',
+  K5LearningDotCom.MathDrills.OrderOfOperations.AddSubtract5Terms in
+    'K5LearningDotCom/K5LearningDotCom.MathDrills.OrderOfOperations.AddSubtract5Terms.pp',
+  K5LearningDotCom.MathDrills.OrderOfOperations.FourOperationsThreeTerms in
+    'K5LearningDotCom/K5LearningDotCom.MathDrills.OrderOfOperations.FourOperationsThreeTerms.pp',
+  K5LearningDotCom.MathDrills.OrderOfOperations.FourOperationsFourTerms in
+    'K5LearningDotCom/K5LearningDotCom.MathDrills.OrderOfOperations.FourOperationsFourTerms.pp',
+  K5LearningDotCom.MathDrills.OrderOfOperations.FourOperationsFiveTerms in
+    'K5LearningDotCom/K5LearningDotCom.MathDrills.OrderOfOperations.FourOperationsFiveTerms.pp',
+  K5LearningDotCom.MathDrills.OrderOfOperations.Exponents4Terms in
+    'K5LearningDotCom/K5LearningDotCom.MathDrills.OrderOfOperations.Exponents4Terms.pp',
+  K5LearningDotCom.MathDrills.OrderOfOperations.Exponents5Terms in
+    'K5LearningDotCom/K5LearningDotCom.MathDrills.OrderOfOperations.Exponents5Terms.pp',
+  K5LearningDotCom.Grade5.OrderOfOperations.NestedParenthesis in
+    'K5LearningDotCom/K5LearningDotCom.Grade5.OrderOfOperations.NestedParenthesis.pp';
 
 {$IFDEF CONSOLE_RUNNER}
 type

@@ -12,6 +12,8 @@ uses
 
 type
   ETokenType = (
+    PARENTHESIS_OPENING,
+    PARENTHESIS_CLOSING,
     EXPONENTIATION,
     MULTIPLICATION,
     DIVISION,
@@ -23,6 +25,8 @@ type
 
 const
   TOKEN_TYPE_NAMES: array [ETokenType] of string = (
+    'Opening Parenthesis',
+    'Closing Parenthesis',
     'Exponentiation',
     'Multiplication',
     'Division',
@@ -44,8 +48,6 @@ type
     property TokenString: string read FTokenString;
     property TokenType: ETokenType read FTokenType;
   end;
-
-  TTokenTree = TObjectBinaryTree<TToken>;
 
   TTokenUtils = class
   public

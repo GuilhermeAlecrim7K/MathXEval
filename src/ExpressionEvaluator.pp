@@ -70,6 +70,8 @@ begin
     CurToken := nil;
     case AExpression[I] of
       ' ': ;
+      '(': CurToken := TToken.Create(I, '(', PARENTHESIS_OPENING);
+      ')': CurToken := TToken.Create(I, ')', PARENTHESIS_CLOSING);
       '*': CurToken := TToken.Create(I, '*', MULTIPLICATION);
       '/': CurToken := TToken.Create(I, '/', DIVISION);
       '-': CurToken := TToken.Create(I, '-', SUBTRACTION);

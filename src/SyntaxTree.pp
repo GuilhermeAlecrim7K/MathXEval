@@ -7,20 +7,23 @@ interface
 uses
   SysUtils,
   Generics.Collections,
-  Token;
+  Token,
+  TokenTree;
 
 type
   TSyntaxTree = class
   private
     FTokenTreeRoot: TTokenTree;
     FLastTokenTree: TTokenTree;
+    FCurrentPriorityLevel: Byte;
     function TokenSequenceAllowed(A, B: ETokenType): boolean;
     function AddTokenToTree(AToken: TToken; var ATokenTreeRoot: TTokenTree): TTokenTree;
     function EvaluateTokenTree(ATokenTree: TTokenTree): Variant;
+    procedure ValidateLastToken;
   public
     constructor Create;
     destructor Destroy; override;
-    procedure PushToken(AToken: TToken);
+    procedure PushToken(var AToken: TToken);
     function Evaluate: Variant;
   end;
 
@@ -36,6 +39,7 @@ begin
   inherited Create;
   FTokenTreeRoot := nil;
   FLastTokenTree := nil;
+  FCurrentPriorityLevel := 1;
 end;
 
 destructor TSyntaxTree.Destroy;
@@ -43,66 +47,110 @@ begin
   FLastTokenTree := nil;
   if Assigned(FTokenTreeRoot) then
     FTokenTreeRoot.Free;
-  inherited;
+  inherited Destroy;
 end;
 
-procedure TSyntaxTree.PushToken(AToken: TToken);
+procedure TSyntaxTree.PushToken(var AToken: TToken);
 begin
-  if (FLastTokenTree = nil) and not TTokenUtils.IsNumberToken(AToken.TokenType) then
-    raise EInvalidFirstToken.Create('First element must be a number');
+  if
+    (FLastTokenTree = nil)
+    and not (AToken.TokenType in [INT, ETokenType.FLOAT, PARENTHESIS_OPENING])
+  then
+    raise EInvalidFirstToken.Create(
+      'First element must be either a number or an opening parenthesis'
+    );
   if
     (FLastTokenTree <> nil)
-    and not TokenSequenceAllowed(FLastTokenTree.Value.TokenType, AToken.TokenType)
+    and not TokenSequenceAllowed(
+      FLastTokenTree.Value.TokenType, AToken.TokenType
+    )
   then
-      raise EInvalidTokenSequence.CreateFmt(
-        'Sequence of "%s"("%s" "%s") not accepted at position %d',
-        [
-          TOKEN_TYPE_NAMES[AToken.TokenType],
-          FLastTokenTree.Value.TokenString,
-          AToken.TokenString,
-          FLastTokenTree.Value.TokenPosition
-        ]
-      );
-  FLastTokenTree := AddTokenToTree(AToken, FTokenTreeRoot);
+    raise EInvalidTokenSequence.CreateFmt(
+      'Sequence "%s %s" not accepted at position %d',
+      [
+        FLastTokenTree.Value.TokenString,
+        AToken.TokenString,
+        FLastTokenTree.Value.TokenPosition
+      ]
+    );
+  case AToken.TokenType of
+    PARENTHESIS_OPENING:
+    begin
+      try
+        Inc(FCurrentPriorityLevel);
+      finally
+        FreeAndNil(AToken);
+      end;
+    end;
+    PARENTHESIS_CLOSING:
+    begin
+      try
+        if (FCurrentPriorityLevel = 1) then
+          raise EParenthesesMismatch.CreateFmt(
+            'There was an attempt to close a parenthesis that was not ' +
+            'previously opened at position %d.',
+            [AToken.TokenPosition]
+          );
+        ValidateLastToken;
+
+        Dec(FCurrentPriorityLevel);
+      finally
+        FreeAndNil(AToken);
+      end;
+    end;
+    EXPONENTIATION, MULTIPLICATION, DIVISION, ADDITION, SUBTRACTION, INT,
+    ETokenType.FLOAT:
+      FLastTokenTree := AddTokenToTree(AToken, FTokenTreeRoot);
+  else
+    raise ENotImplemented.Create('Token Type not implemented.');
+  end;
 end;
 
 function TSyntaxTree.TokenSequenceAllowed(A, B: ETokenType): boolean;
 begin
-  Result :=
-    (TTokenUtils.IsOperationToken(A) and TTokenUtils.IsNumberToken(B))
-    or (TTokenUtils.IsNumberToken(A) and TTokenUtils.IsOperationToken(B));
+  case A of
+    PARENTHESIS_OPENING, EXPONENTIATION, MULTIPLICATION, DIVISION, ADDITION,
+    SUBTRACTION:
+      Result := TTokenUtils.IsNumberToken(B) or (B = PARENTHESIS_OPENING);
+    PARENTHESIS_CLOSING, INT, ETokenType.FLOAT:
+      Result := TTokenUtils.IsOperationToken(B) or (B = PARENTHESIS_CLOSING);
+  else
+    raise ENotImplemented.Create('Token type not implemented');
+  end;
 end;
 
 function TSyntaxTree.AddTokenToTree(AToken: TToken; var ATokenTreeRoot: TTokenTree): TTokenTree;
 begin
   if ATokenTreeRoot = nil then
   begin
-    ATokenTreeRoot := TTokenTree.Create(AToken);
+    ATokenTreeRoot := TTokenTree.Create(AToken, FCurrentPriorityLevel);
     exit(ATokenTreeRoot);
   end;
   if TTokenUtils.IsNumberToken(ATokenTreeRoot.Value.TokenType) then
   begin
-    Result := TTokenTree.Create(AToken);
+    Result := TTokenTree.Create(AToken, FCurrentPriorityLevel);
     Result.Left := ATokenTreeRoot;
     ATokenTreeRoot := Result;
     exit;
   end;
   if TTokenUtils.IsNumberToken(AToken.TokenType) then
   begin
-    FLastTokenTree.Right := TTokenTree.Create(AToken);
+    FLastTokenTree.Right := TTokenTree.Create(AToken, FCurrentPriorityLevel);
     exit(FLastTokenTree.Right);
   end;
   if
-    TTokenUtils.CompareTokenPrecedence(
-      ATokenTreeRoot.Value.TokenType,
-      AToken.TokenType
-    ) = LessThanValue then
-  begin
-    exit(AddTokenToTree(AToken, ATokenTreeRoot.Right));
-  end
+    (FCurrentPriorityLevel > ATokenTreeRoot.PriorityLevel)
+    or (
+      (TTokenUtils.CompareTokenPrecedence(
+        ATokenTreeRoot.Value.TokenType,
+        AToken.TokenType
+      ) = LessThanValue) and (FCurrentPriorityLevel = ATokenTreeRoot.PriorityLevel)
+    )
+  then
+    exit(AddTokenToTree(AToken, ATokenTreeRoot.Right))
   else
   begin
-    Result := TTokenTree.Create(AToken);
+    Result := TTokenTree.Create(AToken, FCurrentPriorityLevel);
     Result.Left := ATokenTreeRoot;
     ATokenTreeRoot := Result;
     exit;
@@ -113,8 +161,11 @@ function TSyntaxTree.Evaluate: Variant;
 begin
   if FLastTokenTree = nil then
     exit(0);
-  if not (FLastTokenTree.Value.TokenType in [INT, ETokenType.FLOAT]) then
-    raise EInvalidLastToken.CreateFmt('Expression terminated with "%s" not accepted', [FLastTokenTree.Value.TokenString]);
+  if FCurrentPriorityLevel > 1 then
+    raise EParenthesesMismatch.Create(
+      'One or more parentheses have not been closed.'
+    );
+  ValidateLastToken;
 
   Result := EvaluateTokenTree(FTokenTreeRoot);
 end;
@@ -198,5 +249,14 @@ begin
       [ATokenTree.Value.TokenString, Ord(ATokenTree.Value.TokenType)]
     );
   end;
+end;
+
+procedure TSyntaxTree.ValidateLastToken;
+begin
+  if not TTokenUtils.IsNumberToken(FLastTokenTree.Value.TokenType) then
+    raise EInvalidLastToken.CreateFmt(
+      'Expression terminated with "%s" at position %d not accepted',
+      [FLastTokenTree.Value.TokenString, FLastTokenTree.Value.TokenPosition]
+    );
 end;
 end.

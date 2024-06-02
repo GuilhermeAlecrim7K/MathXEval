@@ -13,12 +13,13 @@ It is built with [Free Pascal](https://www.freepascal.org/) and the [version 3.2
 
 ## How does it work?
 
-Some principles of lexing and parsing were applied in this solution. Firstly, the string is broken into tokens through an iteration. At the moment that a token is identified, it is pushed to a syntax tree. Some rules are applied during the parsing and tokenization in order to guarantee that only valid characters and character combinations are evaluated. Should any of those validations fail, the program is then terminated with an error message.
+Some principles of lexing and parsing were applied in this solution. Firstly, the string is broken into tokens through an iteration. At the moment that a token is identified, it is pushed to a syntax tree. Some validations are made during the parsing and tokenization in order to guarantee that only valid characters and character combinations are evaluated. Should any of those validations fail, the program is then terminated with an error message.
 
 ### Tokens that are currently accepted
 
 In the [Token.pp](src/Token.pp) unit, you will find an enum with all accepted tokens. They are:
 
+- Parentheses (with nesting)
 - Exponentiation (^)
 - Multiplication (*)
 - Division (/)
@@ -27,7 +28,7 @@ In the [Token.pp](src/Token.pp) unit, you will find an enum with all accepted to
 - Integers 
 - Floating point numbers
 
-The tokens are classified into two categories: operations and numbers. You can guess which ones fall into each category.
+With the exception of the parentheses, which do not push any tokens to the tree, the tokens are classified into two categories: operations and numbers.
 
 The algorithm used for the evaluation of the expression takes into consideration operator precedence.
 
@@ -35,11 +36,13 @@ The algorithm used for the evaluation of the expression takes into consideration
 
 #### Building the tree of tokens
 
-Each time a token is identified, it is pushed to a syntax tree. The syntax tree encapsulates a binary tree of tokens. It validates each token that is pushed and then inserts it in the binary tree.
+Each time a token is identified, it is pushed to a syntax tree. The syntax tree encapsulates a binary tree of tokens. It validates each token that is pushed and then inserts it in the binary tree. However, if the token is a closing or opening parenthesis then it is not pushed to the tree. Instead, it validates the position of the token and either increases or decreases the priority level of the token.
 
-The binary tree is a standard binary tree. It has a value, in this case a token, a `Left` and a `Right` properties that are instances of a binary tree of tokens. The instance of the tree is called root.
+The binary tree is a standard binary tree. It has a value, in this case a token, a `Left` and a `Right` properties that are instances of a binary tree of tokens and a `PriorityLevel` property. The instance of the tree is called root.
 
-Besides the binary tree, there is also a reference to the last operation token tree that was inserted in the tree. This reference is used both in validations and insertions in the tree.
+Besides the root of the binary tree, there is also a reference to the last token tree that was inserted into the tree. This reference is used both in validations and insertions in the tree.
+
+Every tree begins with a priority level `1`. Each opening parenthesis increases the priority level and each closing parenthesis decreases the priority level. This property is later used to identify the order of precedence of operations when pushing tokens to the binary tree.
 
 Here's the logic behind the process of building the tree:
 
@@ -51,9 +54,11 @@ Here's the logic behind the process of building the tree:
 From this point forward, a few assumptions are made to guarantee the order of precedence of the operations.
 
 - All new number tokens will be placed in the Right of the previously inserted operation token tree.
-- All new operations will replace a given token in the tree. If the new token has precedence over the root token then the right node of the tree is recursively parsed to guarantee order of precedence. At some point, it replaces the Right of the root token and its left will now reference the token which was replaced. However, if the new token is either equal or lower in preference, then the root token is replaced by the new token and the left of the new token will now point to the previous root.
+- All new operations will replace a given token in the tree. If the new token: 
+  - is either equal or lower in preference and has the same or a lower priority level, then the root token is replaced by the new token and the left of the new token will now point to the previous root.
+  - has a higher priority level than the root token or has the same priority level and has precedence over the root token, then the same algorithm will be run with the right node of the tree as the root until a replace condition is met.
 
-The tree is assembled this way to allow for parsing the tree from left to right in depth.
+The tree is assembled this way to allow for depth-parsing the tree from left to right.
 
 #### Evaluating the tree of tokens
 
