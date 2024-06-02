@@ -24,7 +24,6 @@ type
     procedure Worksheet7Tests;
   end;
 
-
 implementation
 
 procedure TExponents5TermsTests.Worksheet1Tests;
@@ -60,31 +59,22 @@ begin
   CheckEquals(12, FExpressionEvaluator.Evaluate('11 / 1 + (3^2 - 4 * 2)'));
   CheckEquals(273, FExpressionEvaluator.Evaluate('5 * 10 + (7^3 - 10 * 12)'));
   CheckEquals(59, FExpressionEvaluator.Evaluate('6 * 3^2 + (11 - 2 * 3)'));
-
-
-
-  CheckEquals(37, FExpressionEvaluator.Evaluate('6 * (6 + 9 + 12) - 5^3'));
-  CheckEquals(1440, FExpressionEvaluator.Evaluate('12 * 12 * (4 + 11 - 5)'));
-
   CheckEquals(95, FExpressionEvaluator.Evaluate('(11 + 3^3) * (13 - 8)^2 / 10'));
   CheckEquals(414, FExpressionEvaluator.Evaluate('10 * 9 + (4 - 1)^3 * 12'));
   CheckEquals(90, FExpressionEvaluator.Evaluate('2^3 * 9 + (13 - 11) * 9'));
+  CheckEquals(37, FExpressionEvaluator.Evaluate('6 * (6 + 9 + 12) - 5^3'));
+  CheckEquals(1440, FExpressionEvaluator.Evaluate('12 * 12 * (4 + 11 - 5)'));
 end;
 
 procedure TExponents5TermsTests.Worksheet4Tests;
 begin
-
+  CheckEquals(263, FExpressionEvaluator.Evaluate('3 * (1 + 3 + 7)^2 - 10^2'));
   CheckEquals(3, FExpressionEvaluator.Evaluate('11 + (6^3 / 9) - 8 * 4'));
   CheckEquals(112, FExpressionEvaluator.Evaluate('7 + 7 * (12 - 4) + 7^2'));
   CheckEquals(493, FExpressionEvaluator.Evaluate('10 / 2 + (7^2 * 10 - 2)'));
-
-
-  CheckEquals(20, FExpressionEvaluator.Evaluate('12^2 / (1 + 5) - (12 / 3)'));
-
-
-  CheckEquals(263, FExpressionEvaluator.Evaluate('3 * (1 + 3 + 7)^2 - 10^2'));
   CheckEquals(77, FExpressionEvaluator.Evaluate('8 + 1 * (12 - 4)^2 + 5'));
   CheckEquals(167, FExpressionEvaluator.Evaluate('(4 + 11)^2 - 7 * 10 + 12'));
+  CheckEquals(20, FExpressionEvaluator.Evaluate('12^2 / (1 + 5) - (12 / 3)'));
   CheckEquals(103, FExpressionEvaluator.Evaluate('(9^3 - 11 + 3) / 7'));
 end;
 
@@ -95,9 +85,6 @@ begin
   CheckEquals(434, FExpressionEvaluator.Evaluate('2 * (19 - 14 + 12) + 20^2'));
   CheckEquals(495, FExpressionEvaluator.Evaluate('18 / 9 + (4^3 * 8 - 19)'));
   CheckEquals(94, FExpressionEvaluator.Evaluate('19 + 13 * (18 - 16) + 7^2'));
-
-
-
   CheckEquals(211, FExpressionEvaluator.Evaluate('11 + 1 * (5 - 3)^2 + 14^2'));
   CheckEquals(2500, FExpressionEvaluator.Evaluate('4 * 5 * (12 - 2 - 5)^3'));
   CheckEquals(188, FExpressionEvaluator.Evaluate('4^2 * 10 + (16 - 9) * 4'));
@@ -105,17 +92,12 @@ end;
 
 procedure TExponents5TermsTests.Worksheet7Tests;
 begin
-
+  CheckEquals(384, FExpressionEvaluator.Evaluate('2 * 3 * (17 + 2 - 11)^2'));
   CheckEquals(147, FExpressionEvaluator.Evaluate('17 * 12 - (15^2 - 12 * 14)'));
   CheckEquals(756, FExpressionEvaluator.Evaluate('15 / 5 + (8^2 * 12 - 15)'));
-
+  CheckEquals(68, FExpressionEvaluator.Evaluate('16 / 4 + 2^2 * (15 - 11)^2'));
   CheckEquals(364284, FExpressionEvaluator.Evaluate('18 * (15^3 + 7 - 9) * 6'));
   CheckEquals(11, FExpressionEvaluator.Evaluate('15 + (16^2 / 8) - 2 * 18'));
-
-
-
-  CheckEquals(384, FExpressionEvaluator.Evaluate('2 * 3 * (17 + 2 - 11)^2'));
-  CheckEquals(68, FExpressionEvaluator.Evaluate('16 / 4 + 2^2 * (15 - 11)^2'));
   CheckEquals(57, FExpressionEvaluator.Evaluate('(5^2 - 7) * 3 + 18 / 6'));
   CheckEquals(638, FExpressionEvaluator.Evaluate('(7^3 - 2 * 12) * (15 - 11) / 2'));
 end;

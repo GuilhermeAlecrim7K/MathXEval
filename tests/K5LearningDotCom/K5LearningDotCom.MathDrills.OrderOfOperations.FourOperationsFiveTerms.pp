@@ -71,19 +71,15 @@ end;
 
 procedure TFourOperationsFiveTermsTests.Worksheet4Tests;
 begin
-
+  CheckEquals(447, FExpressionEvaluator.Evaluate('9*18+(17-2)*19'));
   CheckEquals(84, FExpressionEvaluator.Evaluate('12/6+(11*9-17)'));
   CheckEquals(129, FExpressionEvaluator.Evaluate('18/3+(16*8-5)'));
   CheckEquals(127, FExpressionEvaluator.Evaluate('8+10*(12-2)+19'));
   CheckEquals(32, FExpressionEvaluator.Evaluate('4*(11+9-14)+8'));
   CheckEquals(67, FExpressionEvaluator.Evaluate('8*7+12+3-4'));
-
+  CheckEquals(33, FExpressionEvaluator.Evaluate('(6-4)*12+18/2'));
   CheckEquals(290, FExpressionEvaluator.Evaluate('20*(3+20)-(17*10)'));
   CheckEquals(28, FExpressionEvaluator.Evaluate('14*(4+6)-(7*16)'));
-
-
-  CheckEquals(447, FExpressionEvaluator.Evaluate('9*18+(17-2)*19'));
-  CheckEquals(33, FExpressionEvaluator.Evaluate('(6-4)*12+18/2'));
   CheckEquals(28, FExpressionEvaluator.Evaluate('(19+2)*(10-2)/6'));
 end;
 
@@ -92,15 +88,12 @@ begin
   CheckEquals(768, FExpressionEvaluator.Evaluate('12*16*(1+11-8)'));
   CheckEquals(46, FExpressionEvaluator.Evaluate('(33+40)-4*(7+3)+13'));
   CheckEquals(3549, FExpressionEvaluator.Evaluate('39*(2+16-5)*7'));
-
+  CheckEquals(356, FExpressionEvaluator.Evaluate('(33-5)*13+21/7-11'));
   CheckEquals(1170, FExpressionEvaluator.Evaluate('26*(27+4+15)-26'));
   CheckEquals(276, FExpressionEvaluator.Evaluate('30/10+(20*15-27)'));
   CheckEquals(5, FExpressionEvaluator.Evaluate('32+(39/3)-20*2'));
   CheckEquals(5, FExpressionEvaluator.Evaluate('34+(36/4)-2*19'));
   CheckEquals(3035, FExpressionEvaluator.Evaluate('40*(21+23+32)-5'));
-
-
-  CheckEquals(356, FExpressionEvaluator.Evaluate('(33-5)*13+21/7-11'));
   CheckEquals(91, FExpressionEvaluator.Evaluate('(16+40)*(38-12)/16'));
 end;
 
