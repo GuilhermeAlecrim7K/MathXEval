@@ -31,7 +31,9 @@ uses
   K5LearningDotCom.MathDrills.OrderOfOperations.Exponents4Terms in
     'K5LearningDotCom/K5LearningDotCom.MathDrills.OrderOfOperations.Exponents4Terms.pp',
   K5LearningDotCom.MathDrills.OrderOfOperations.Exponents5Terms in
-    'K5LearningDotCom/K5LearningDotCom.MathDrills.OrderOfOperations.Exponents5Terms.pp';
+    'K5LearningDotCom/K5LearningDotCom.MathDrills.OrderOfOperations.Exponents5Terms.pp',
+  K5LearningDotCom.Grade5.OrderOfOperations.NestedParenthesis in
+    'K5LearningDotCom/K5LearningDotCom.Grade5.OrderOfOperations.NestedParenthesis.pp';
 
 {$IFDEF CONSOLE_RUNNER}
 type
